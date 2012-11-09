@@ -1,0 +1,10 @@
+## -*- R -*-
+bibentry(
+bibtype='Article',
+title='A user-defined data type for the storage of time series data allowing efficient similarity screening',
+author=as.person('Anatoly Sorokin [aut], Gene Selkov [aut], Igor Goryanin[aut]'),
+journal='European Journal of Pharmaceutical Sciences',
+year='2012',
+number=4,
+pages='272--274',
+volume='46')

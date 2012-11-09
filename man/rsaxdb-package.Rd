@@ -1,41 +1,23 @@
 \name{rsaxdb-package}
 \alias{rsaxdb-package}
-\alias{rsaxdb}
 \docType{package}
-\title{
-What the package does (short line)
-~~ package title ~~
-}
-\description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
-}
+\title{R companion to DNA electrostatic database}
+\description{Transform time series into textual and SAX representation compatible with PostgreSQL Decima datatype.
+Communicate with the database, implements general CRUD procedures and functions for custom SQL queries.}
 \details{
-\tabular{ll}{
-Package: \tab rsaxdb\cr
+\tabular{ll}{Package: \tab rsaxdb\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
+Title: \tab R companion to DNA electrostatic database\cr
+Version: \tab 0.0-1\cr
 Date: \tab 2012-11-09\cr
-License: \tab What license is it under?\cr
+Author: \tab Anatoly Sorokin, Evgenia Temlyakova 2012\cr
+Maintainer: \tab Anatoly Sorokin <lptolik@gmail.com>\cr
+License: \tab GPL (>= 2)\cr
+Depends: \tab R (>= 2.14), RPostgreSQL\cr
+Sugests: \tab \cr}
 }
-~~ An overview of how to use the package, including the most important functions ~~
-}
-\author{
-Who wrote it
+\author{Anatoly Sorokin, Evgenia Temlyakova 2012}
 
-Maintainer: Who to complain to <yourfault@somewhere.net>
-~~ The author and/or maintainer of the package ~~
-}
-\references{
-~~ Literature or other references for background information ~~
-}
-~~ Optionally other standard keywords, one per line, from file KEYWORDS in the R documentation ~~
-~~ directory ~~
 \keyword{ package }
-\seealso{
-~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
-}
-\examples{
-~~ simple examples of the most important functions ~~
-}
+
+
