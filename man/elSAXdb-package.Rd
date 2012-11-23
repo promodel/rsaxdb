@@ -8,8 +8,8 @@ Communicate with the database, implements general CRUD procedures and functions 
 \tabular{ll}{Package: \tab elSAXdb\cr
 Type: \tab Package\cr
 Title: \tab R companion to DNA electrostatic database\cr
-Version: \tab 0.0-1\cr
-Date: \tab 2012-11-09\cr
+Version: \tab 0.0-2\cr
+Date: \tab 2012-11-23\cr
 Author: \tab Anatoly Sorokin, Evgenia Temlyakova 2012\cr
 Maintainer: \tab Anatoly Sorokin <lptolik@gmail.com>\cr
 License: \tab GPL (>= 2)\cr

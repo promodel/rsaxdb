@@ -2,7 +2,7 @@
 \alias{plotTS}
 \title{plotTS}
 \description{Function to plot time-serieses from DB}
-\usage{plotTS(ts, genes = 1:length(ts), light = c(), title = "Time series", 
+\usage{plotTS(ts, genes = 1:length(ts), light = c(), title = "Electrostatic potential", 
     norm = FALSE, shift = rep(0, length(ts)), first.is.query = FALSE)}
 \arguments{
   \item{ts}{time serieses in database string form as character vector}
