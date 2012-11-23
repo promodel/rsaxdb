@@ -5,7 +5,7 @@
 
 connect.rdm<-function(
 ### Open connection to RobustDM database
-  dbname = 'robustdm',##<< name of the database! Should be changed before distribution!!!!
+  dbname = 'kappaprom',##<< name of the database! Should be changed before distribution!!!!
   port='10000',##<< port at which database is listening! Should be changed before distribution, standard PostgreSQL port is 56!!!!
   host =if(!is.null(Sys.getenv("PGHOST"))) Sys.getenv("PGHOST") else "localhost",##<< database server name, URL or IP
   ...##<< other authorization arguments needed by the DBMS instance; these typically include user, password, dbname, host, port, etc. For details see the PostgreSQL DBIDriver.
@@ -27,29 +27,33 @@ clean.con.rdm<-function(
 	
 }
 
-parseTS<-function(
-  ### Function creates time series object from PostgreSQL ts object
-  string,##<< string representation returned by PostgreSQL
-  t_init=-540##<< initial measurement time
+findElSeq<-function(
+### main search function: it calculates the potential profile, wrap it into Decima TS string and submit query to the database 
+  seq##<< sequence to be processed
+  ,ref=271##<< reference point to align with promoter TSS
   ){
-	duration<- -1.0;
-	if((regexpr('/[0-9\\.]+$',string)->n)>-1){# there are duration value
-		duration<-as.double(substr(string,n+1,n+attr(n,'match.length')-1))
-		string<-substr(string,0,n-1)
-	}
-	val<-as.double(unlist(strsplit(string,';')));
-	if(duration<0) duration<-(length(val)-1);
-	t<-ts(val,start=t_init,end=duration+t_init,frequency=(length(val)-1)/duration)
-  ### time series of type ts
+  if(!require(reldna)){
+    stop('Required library "reldna" is missing')
+  }
+  pot<-sseqspline1D(seq,ref)
+  sub('\\$\\$\\$\\$1',wrapSignal(pot),.getQuery()$closest10.05t)->q10.05t
+  con<-connect.rdm()
+  ec<-dbGetQuery(con,q10.05t)
+  if(dim(ec)[1]<=0){
+    sub('\\$\\$\\$\\$1',wrapSignal(pot),.getQuery()$closest10.1t)->q10.1t
+    ec<-dbGetQuery(con,q10.1t)
+  }
+  clean.con.rdm(con)
+  res<-data.frame(id=ec$id,nm=ec$nm,regulonid=ec$regulonid,pot=ec$pot,sax_distance=ec$sax_distance,p_distance=unlist(lapply(ec$pot,.potDist,pot)),stringsAsFactors=FALSE)
+  attr(res,'query.seq')<-seq
+  attr(res,'query.pot')<-pot
+ return(res)
 }
 
-#' 
-#' 
-#' @param string 
-#' @returnType 
-#' @return 
-#' @author asorokin
-#' @export
+.potDist<-function(query,pot){
+  return(sqrt(mean((scale(pot)-scale(parseTS(query)))^2)))
+}
+
 parseArray<-function(
   ### Converts string of numbers similar to C static arrays to vector of doubles
   string##<< string of numbers similar to C static array definition
@@ -81,16 +85,27 @@ shiftTSwindow<-function(
     ### shifted time series
 }
 
+plotRes<-function(
+  ###Function to plot results of DB quering
+  res##<< result of 'findElSeq' call
+){
+  plotTS(c(wrapSignal(attr(res,'query.pot')),res$pot),
+         norm=TRUE,first.is.query=TRUE,
+         genes=c('query',res$nm),title='Electrostatic Potential profile'
+         ) 
+}
+
 plotTS<-function(
   ###Function to plot time-serieses from DB
   ts,##<< time serieses in database string form as character vector
   genes=1:length(ts),##<< number of individual lines
   light=c(),##<< decoration of graph 
-  title='Time series',##<< title of the plot
+  title='Electrostatic potential',##<< title of the plot
   norm=FALSE,##<< logical to use normalisation or not
   shift=rep(0,length(ts)),##<< offsets to be added to the time serieces
   first.is.query=FALSE##<< logical should first line be decorated with bolder line as original query
   ){
+  old<-par(mar=c(5.1, 4.1, 4.1, 8.1),xpd=TRUE)
 	lts<-lapply(ts,parseTS);
 	if(norm){
 		lts<-lapply(lts,function(.x) (.x-mean(.x))/sd(.x));
@@ -103,8 +118,9 @@ plotTS<-function(
 	ltsp<-sapply(lts,tsp);
 	lf<-min(ltsp[1,]);
 	rt<-max(ltsp[2,]);
+  col<-rainbow(length(ts)*2)[as.vector(rbind(1:length(ts)*2,2*length(ts):1))[1:length(ts)]]
 	fI=2;
-	plot(lts[[2]],main=title,xlab='Time',ylab='activity',xlim=c(lf,rt),ylim=c(low,hi),col=1,type='n');
+	plot(lts[[2]],main=title,xlab='Z, A',ylab='phi',xlim=c(lf,rt),ylim=c(low,hi),col=col[1],type='n');
 	if(length(light)>0){
 		region<-par('usr');
 		if(length(light)%%2 > 0){
@@ -115,17 +131,23 @@ plotTS<-function(
 		}
 	}
 	for(i in fI:length(lts)){
-		lines(lts[[i]],col=i);
-	}
-	if(length(genes)>0){
-		legend('topleft',legend=genes,col=1:length(lts),lwd=1);
+		lines(lts[[i]],col=col[i-fI+1]);
 	}
 	if(first.is.query){
-		lines(lts[[1]],col=1,type='l',lwd=3);
-		fI=2;
+	  lines(lts[[1]],col=1,type='l',lwd=3);
+	  fI=2;
 	}else{
-		lines(lts[[1]],col=1,type='l');
+	  lines(lts[[1]],col=1,type='l');
 	}
+	if(length(genes)>0){
+    if(first.is.query){
+      legend("topright", inset=c(-0.23,0),legend=genes,col=c(1,col[2:length(lts)-1]),lwd=c(3,rep(1,length(lts)-1)),bty='n');
+#      legend('topleft',legend=genes,col=c(1,col[2:length(lts)-1],lwd=c(3,rep(1,length(lts)-1)),);
+    }else{
+		  legend('topleft',legend=genes,col=c(1,col[2:length(lts)-1]),lwd=1);
+    }
+	}
+  par(old)
 }
 
 getexp<-function(

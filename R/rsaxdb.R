@@ -19,7 +19,24 @@
         where   p.nm like '$$$$1' and p.potid=e2.id
         and sax_nar_1p(e1.sax144,e2.sax144) 
         and e1.id <> e2.id
-        order by 5 limit 30;"
+        order by 5 limit 30;",
+    closest10.1t=paste("select p.id, p.nm,regulonid,",
+  " sax1t, ts_sax(sig,20,8) sig_sax,",
+  "sax_distance(sax1t,ts_sax(sig,20,8)), ",
+  "pot, sig from tot_win tw join elpot e on potid=id join promoter p on p.potid=e.id, ",
+  "ts_in('$$$$1') as sig",
+  "  where sax_nar_10p(sax1t,",
+  "  ts_sax(sig,20,8))",
+  "  order by 6 limit 10"),
+    closest10.05t=paste("select p.id, p.nm,regulonid,",
+                       " sax05t, ts_sax(sig,40,8) sig_sax,",
+                       "sax_distance(sax1t,ts_sax(sig,40,8)), ",
+                       "pot, sig from tot_win tw join elpot e on potid=id join promoter p on p.potid=e.id, ",
+                       "ts_in('$$$$1') as sig",
+                       "  where sax_nar_10p(sax05t,",
+                       "  ts_sax(sig,40,8))",
+                       "  order by 6 limit 10")
+    
     )
   return(queryList[name])
   ### list of strings, representing parts of the query to be concatenated with 
