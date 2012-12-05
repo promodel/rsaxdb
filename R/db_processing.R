@@ -31,14 +31,15 @@ findElSeq<-function(
 ### main search function: it calculates the potential profile, wrap it into Decima TS string and submit query to the database 
   seq##<< sequence to be processed
   ,ref=271##<< reference point to align with promoter TSS
+  ,... ##<< arguments to be used to setup connection to the database
   ){
   if(!require(reldna)){
     stop('Required library "reldna" is missing')
   }
   pot<-sseqspline1D(seq,ref)
   sub('\\$\\$\\$\\$1',wrapSignal(pot),.getQuery()$closest10.05t)->q10.05t
-  con <- connect.rdm(host='192.168.0.188',user='postgres')
-#  con<-connect.rdm()
+#  con <- connect.rdm(host='192.168.0.188',user='postgres')
+  con<-connect.rdm(...)
   ec<-dbGetQuery(con,q10.05t)
   if(dim(ec)[1]<=0){
     sub('\\$\\$\\$\\$1',wrapSignal(pot),.getQuery()$closest10.1t)->q10.1t
