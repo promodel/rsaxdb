@@ -1,8 +1,8 @@
 Package: elSAXdb
 Type: Package
 Title: R companion to DNA electrostatic database 
-Version: 0.0-2
-Date: 2012-11-23
+Version: 0.0-3
+Date: 2012-12-05
 Author: Anatoly Sorokin, Evgenia Temlyakova 2012 
 Maintainer: Anatoly Sorokin <lptolik@gmail.com>
 Description: Transform time series into textual and SAX representation compatible with PostgreSQL Decima datatype.
