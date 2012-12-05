@@ -2,7 +2,7 @@
 \alias{connect.rdm}
 \title{connect rdm}
 \description{Open connection to RobustDM database}
-\usage{connect.rdm(dbname = "kappaprom", port = "10000", host = if (!is.null(Sys.getenv("PGHOST"))) Sys.getenv("PGHOST") else "localhost", 
+\usage{connect.rdm(dbname = "eldb", port = "5432", host = if (!is.null(Sys.getenv("PGHOST"))) Sys.getenv("PGHOST") else "localhost", 
     ...)}
 \arguments{
   \item{dbname}{name of the database! Should be changed before distribution!!!!}
