@@ -33,6 +33,7 @@ findElSeq<-function(
   ,ref=271##<< reference point to align with promoter TSS
   ,... ##<< arguments to be used to setup connection to the database
   ){
+  ow<-options(warn=-1)  
   if(!require(reldna)){
     stop('Required library "reldna" is missing')
   }
@@ -49,6 +50,7 @@ findElSeq<-function(
   res<-data.frame(id=ec$id,nm=ec$nm,regulonid=ec$regulonid,pot=ec$pot,sax_distance=ec$sax_distance,p_distance=unlist(lapply(ec$pot,.potDist,pot)),stringsAsFactors=FALSE)
   attr(res,'query.seq')<-seq
   attr(res,'query.pot')<-pot
+  options(ow)
  return(res)
 }
 
