@@ -27,6 +27,17 @@ clean.con.rdm<-function(
 	
 }
 
+.fetchData<-function(level=0,wpot,con){
+  qt<-.nextQuery(level)
+  if(is.null(qt)){stop('Nothing was found')}
+  sub('\\$\\$\\$\\$1',wpot,qt)->q
+  ec<-dbGetQuery(con,q)
+  if(dim(ec)[1]<=0){
+    ec<- .fetchData(level+1,wpot,con)
+  }
+  return(ec)
+}
+
 findElSeq<-function(
 ### main search function: it calculates the potential profile, wrap it into Decima TS string and submit query to the database 
   seq##<< sequence to be processed
@@ -38,14 +49,10 @@ findElSeq<-function(
     stop('Required library "reldna" is missing')
   }
   pot<-sseqspline1D(seq,ref)
-  sub('\\$\\$\\$\\$1',wrapSignal(pot),.getQuery()$closest10.05t)->q10.05t
+  wpot<-wrapSignal(pot)
 #  con <- connect.rdm(host='192.168.0.188',user='postgres')
   con<-connect.rdm(...)
-  ec<-dbGetQuery(con,q10.05t)
-  if(dim(ec)[1]<=0){
-    sub('\\$\\$\\$\\$1',wrapSignal(pot),.getQuery()$closest10.1t)->q10.1t
-    ec<-dbGetQuery(con,q10.1t)
-  }
+  ec<- .fetchData(0,wpot,con)
   clean.con.rdm(con)
   res<-data.frame(id=ec$id,nm=ec$nm,regulonid=ec$regulonid,pot=ec$pot,sax_distance=ec$sax_distance,p_distance=unlist(lapply(ec$pot,.potDist,pot)),stringsAsFactors=FALSE)
   attr(res,'query.seq')<-seq
