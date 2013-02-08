@@ -20,14 +20,6 @@
         and sax_nar_1p(e1.sax144,e2.sax144) 
         and e1.id <> e2.id
         order by 5 limit 30;",
-    closest10.1t=paste("select p.id, p.nm,regulonid,",
-  " sax1t, ts_sax(sig,20,8) sig_sax,",
-  "sax_distance(sax1t,ts_sax(sig,20,8)), ",
-  "pot, sig from tot_win tw join elpot e on potid=id join promoter p on p.potid=e.id, ",
-  "ts_in('$$$$1') as sig",
-  "  where sax_nar_10p(sax1t,",
-  "  ts_sax(sig,20,8))",
-  "  order by 6 limit 10"),
     closest10.05t=paste("select p.id, p.nm,regulonid,",
                        " sax05t, ts_sax(sig,40,8) sig_sax,",
                        "sax_distance(sax1t,ts_sax(sig,40,8)), ",
@@ -36,12 +28,12 @@
                        "  where sax_nar_10p(sax05t,",
                        "  ts_sax(sig,40,8))",
                        "  order by 6 limit 10"),
-    closest25.1t=paste("select p.id, p.nm,regulonid,",
+    closest10.1t=paste("select p.id, p.nm,regulonid,",
                        " sax1t, ts_sax(sig,20,8) sig_sax,",
                        "sax_distance(sax1t,ts_sax(sig,20,8)), ",
                        "pot, sig from tot_win tw join elpot e on potid=id join promoter p on p.potid=e.id, ",
                        "ts_in('$$$$1') as sig",
-                       "  where sax_nar_25p(sax1t,",
+                       "  where sax_nar_10p(sax1t,",
                        "  ts_sax(sig,20,8))",
                        "  order by 6 limit 10"),
     closest25.05t=paste("select p.id, p.nm,regulonid,",
@@ -52,12 +44,12 @@
                         "  where sax_nar_25p(sax05t,",
                         "  ts_sax(sig,40,8))",
                         "  order by 6 limit 10"),
-    closest50.1t=paste("select p.id, p.nm,regulonid,",
+    closest25.1t=paste("select p.id, p.nm,regulonid,",
                        " sax1t, ts_sax(sig,20,8) sig_sax,",
                        "sax_distance(sax1t,ts_sax(sig,20,8)), ",
                        "pot, sig from tot_win tw join elpot e on potid=id join promoter p on p.potid=e.id, ",
                        "ts_in('$$$$1') as sig",
-                       "  where sax_nar_50p(sax1t,",
+                       "  where sax_nar_25p(sax1t,",
                        "  ts_sax(sig,20,8))",
                        "  order by 6 limit 10"),
     closest50.05t=paste("select p.id, p.nm,regulonid,",
@@ -67,12 +59,21 @@
                         "ts_in('$$$$1') as sig",
                         "  where sax_nar_50p(sax05t,",
                         "  ts_sax(sig,40,8))",
-                        "  order by 6 limit 10")    )
+                        "  order by 6 limit 10"),
+    closest50.1t=paste("select p.id, p.nm,regulonid,",
+                       " sax1t, ts_sax(sig,20,8) sig_sax,",
+                       "sax_distance(sax1t,ts_sax(sig,20,8)), ",
+                       "pot, sig from tot_win tw join elpot e on potid=id join promoter p on p.potid=e.id, ",
+                       "ts_in('$$$$1') as sig",
+                       "  where sax_nar_50p(sax1t,",
+                       "  ts_sax(sig,20,8))",
+                       "  order by 6 limit 10")
+  )
   return(queryList[name])
   ### list of strings, representing parts of the query to be concatenated with 
 }
 
-.nextQuery<-function(rec_Level){
-  l<-.getQuery()[3+rec_level][[1]];
+.nextQuery<-function(rec_level){
+  l<-.getQuery()[3+rec_level];
   return(l)
 }

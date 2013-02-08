@@ -35,6 +35,8 @@ clean.con.rdm<-function(
   if(dim(ec)[1]<=0){
     ec<- .fetchData(level+1,wpot,con)
   }
+  attr(ec,'level')<-c(attr(ec,'level'),level)
+  attr(ec,'q')<-c(attr(ec,'q'),names(qt))
   return(ec)
 }
 
