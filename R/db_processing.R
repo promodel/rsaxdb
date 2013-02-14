@@ -8,13 +8,14 @@ connect.rdm<-function(
   dbname = 'eldb',##<< name of the database! Should be changed before distribution!!!!
   port='5432',##<< port at which database is listening! Should be changed before distribution, standard PostgreSQL port is 56!!!!
   host =if(!is.null(Sys.getenv("PGHOST"))) Sys.getenv("PGHOST") else "localhost",##<< database server name, URL or IP
-  ...##<< other authorization arguments needed by the DBMS instance; these typically include user, password, dbname, host, port, etc. For details see the PostgreSQL DBIDriver.
+  user = "postgres",##<< database user name
+  ...##<< other authorization arguments needed by the DBMS instance; these typically include password, dbname, host, port, etc. For details see the PostgreSQL DBIDriver.
   ){
   if(!require(RPostgreSQL)){
     stop("Method requires library 'RPostgreSQL'. Please install and relaunch.\n")
   }
 	drv <- dbDriver("PostgreSQL")
-	con <- dbConnect(drv, dbname = dbname,port=port,host=host,...)
+	con <- dbConnect(drv, dbname = dbname,port=port,host=host,user=user,...)
 	return(con)
   ### connection object see 
 }
